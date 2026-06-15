@@ -50,20 +50,6 @@ python3 -m http.server 8000
 # then visit http://localhost:8000
 ```
 
-## Publishing on GitHub Pages
-
-1. Push this repository to GitHub (see below).
-2. In the repo, go to **Settings → Pages**.
-3. Under **Build and deployment**, set **Source** to *Deploy from a branch*, choose the `main` branch and the `/ (root)` folder, then **Save**.
-4. After a minute, your site is live at `https://<your-username>.github.io/<repo-name>/`.
-
-## Single-file version
-
-If you'd rather hand out one file (e.g. on Teams or a USB stick), use `dist/esports-progress-hub.html`. Regenerate it after any edit with:
-
-```bash
-python3 build.py
-```
 
 ## A note on data accuracy
 
