@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esports Progress Hub — BTEC L3 Esports, Exeter College</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Main navigation">
+    <div class="rail-brand">
+      <div class="kicker">BTEC L3 Esports · Exeter College</div>
+      <h1>Progress <span class="lab">Hub</span></h1>
+    </div>
+    <div class="nav" id="nav"></div>
+    <div class="rail-foot">Faculty of IT, Digital &amp; Data<br>BTEC L3 Nationals in Esports</div>
+  </nav>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb" id="crumb" hidden></div>
+      <h2 id="pageTitle">Welcome</h2>
+      <p id="pageSub"></p>
+    </div>
+    <div class="section" id="content"></div>
+  </main>
+</div>
+<div id="printArea" aria-hidden="true"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/filegen.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
