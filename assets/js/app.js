@@ -213,7 +213,7 @@ PAGES.grading = {
     c.appendChild(el(`<div class="card" style="margin-top:16px"><h3>The rules that override points</h3>
       <div class="prose"><ul>
         <li><b>Every mandatory unit must be at least a Pass.</b> A U in any mandatory unit makes the whole qualification Unclassified — no matter how many points you have.</li>
-        <li><b>Extended Diploma: at least 900 GLH must be at Pass or above.</b> You cannot pass the full qualification on points alone if too many units are at U.</li>
+        <li><b>Unclassified (U):</b> if any mandatory unit is U, the whole qualification is U.</li>
         <li><b>Year 1 grades carry forward.</b> The Extended Diploma is graded across all 15 units from both years, so a strong Year 1 is banked into your final grade.</li>
       </ul></div>
       <button class="btn btn-primary" id="g2c" style="margin-top:6px">Open the Grade Calculator →</button>
@@ -451,11 +451,10 @@ function computeQual(year){
   const total=all.reduce((s,u)=>s+UNIT_PTS[u.glh][u.grade],0);
   const failedMand=Q.mandatory.filter(u=>gcState.mand[u.n]==='U');
   const glhAtPass=all.reduce((s,u)=>s+(u.grade!=='U'?Number(u.glh):0),0);
-  const need900=(year==='y2'&&glhAtPass<900);
-  const eligible=failedMand.length===0&&!need900;
+  const eligible = failedMand.length === 0;
   let grade='U';
   if(eligible){ for(const [g,thr] of Q.thresholds){ if(total>=thr) grade=g; } }
-  return {Q,all,total,failedMand,glhAtPass,need900,eligible,grade};
+  return {Q,all,total,failedMand,glhAtPass,eligible,grade};
 }
 function gradeColour(g){return g==='U'?'var(--accent)':(g.includes('D')?'var(--dist)':(g.includes('M')?'var(--merit)':'var(--navy)'));}
 function unitTitle(n){const u=UNITS.find(x=>x.n===n);return u?u.title:'Unit '+n;}
@@ -568,8 +567,6 @@ function renderCalc(){
   const elig=$('gcEligibility');
   if(res.failedMand.length){
     elig.innerHTML='<div class="feedback no"><b>Unclassified regardless of points:</b> Pearson requires at least a Pass in each of Units '+Q.mandatory[0].n+'–'+Q.mandatory[Q.mandatory.length-1].n+'. Currently at U: '+res.failedMand.map(u=>'Unit '+u.n).join(', ')+'.</div>';
-  } else if(res.need900){
-    elig.innerHTML='<div class="feedback no"><b>Unclassified regardless of points:</b> the Extended Diploma needs at least 900 GLH at Pass or above. You have '+res.glhAtPass+' GLH at Pass+.</div>';
   } else elig.innerHTML='';
 
   const nextEl=$('gcNext');
