@@ -442,7 +442,7 @@ const gcState = {mand:{}, opts:[]};
 QUALS.y2.mandatory.forEach(u=>gcState.mand[u.n]='M');
 gcState.opts=[8,11,10,6,7,12,1,1,1,1].map(n=>({unit:n,grade:'M'})); // first 3 = Y1 optionals; placeholders adjusted below
 // sensible defaults: use the optionals we actually document
-gcState.opts=[8,11,10,6,7,12].map(n=>({unit:n,grade:'M'}));
+gcState.opts=[7,8,10,6,9,11,12,13,19,20].map(n=>({unit:n,grade:'M'}));
 
 function computeQual(year){
   const Q=QUALS[year];

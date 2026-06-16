@@ -89,7 +89,39 @@ const UNITS = [
    assessment:"Internally assessed — plan, deliver and reflect on coaching for real players.",
    guidance:"Coaching is assessed on planning and reflection, not charisma. Use recognised coaching theory (feedback models, questioning techniques) to plan sessions (aim C), then evaluate your own impact honestly (aim D): what landed, what didn't, and what theory explains the difference.",
    resources:[["UK Coaching","https://www.ukcoaching.org","Recognised coaching principles and session planning."],["Pearson unit spec","https://qualifications.pearson.com","Learning aims and criteria."]],
-   careers:["Esports coach","Performance analyst","Teaching / training pathways","Mentoring roles"]}
+   careers:["Esports coach","Performance analyst","Teaching / training pathways","Mentoring roles"]},
+
+  {n:9,glh:60,year:2,title:"Games Design",
+   brief:"Investigate game design principles and mechanics.",
+   aims:[],
+   assessment:"Internally assessed.",
+   guidance:"",
+   resources:[],
+   careers:[]},
+
+  {n:13,glh:60,year:2,title:"Psychology for Esports",
+   brief:"Explore psychological principles applied to esports performance.",
+   aims:[],
+   assessment:"Internally assessed.",
+   guidance:"",
+   resources:[],
+   careers:[]},
+
+  {n:19,glh:60,year:2,title:"Customer Immersion Experiences",
+   brief:"Create immersive customer experiences in esports.",
+   aims:[],
+   assessment:"Internally assessed.",
+   guidance:"",
+   resources:[],
+   careers:[]},
+
+  {n:20,glh:60,year:2,title:"Computer Networks",
+   brief:"Understand network infrastructure supporting esports.",
+   aims:[],
+   assessment:"Internally assessed.",
+   guidance:"",
+   resources:[],
+   careers:[]}
 ];
 
 // Command verbs by band — from the BTEC command verb glossary
@@ -114,7 +146,7 @@ const QUALS = {
       "D":"A strong result — 72 UCAS points and real currency with universities and employers.",
       "D*":"The top of the range — 84 UCAS points. This sets up a triple-Distinction Extended Diploma."}
   },
-  y2:{ name:"Extended Diploma", glh:1080, optCount:6,
+  y2:{ name:"Extended Diploma", glh:1080, optCount:7,
     mandatory:[{n:1,glh:"60"},{n:2,glh:"120"},{n:3,glh:"90"},{n:4,glh:"90"},{n:5,glh:"120"}],
     thresholds:[["U",0],["PPP",108],["MPP",124],["MMP",140],["MMM",156],["DMM",176],["DDM",196],["DDD",216],["D*DD",234],["D*D*D",252],["D*D*D*",270]],
     ucas:{"PPP":48,"MPP":64,"MMP":80,"MMM":96,"DMM":112,"DDM":128,"DDD":144,"D*DD":152,"D*D*D":160,"D*D*D*":168},
