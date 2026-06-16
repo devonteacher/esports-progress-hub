@@ -1213,10 +1213,70 @@ PAGES.tracker = {
   title:"Target Tracker",
   sub:"Set a target grade for each unit at the start of the year, then log your actual grades as assignments come back. See at a glance whether you're on track.",
   render(c){
-    c.appendChild(el(`<div class="notice" style="margin-top:0">This tracker is for your own planning and isn't saved between sessions — note your targets somewhere too. Your official grades live in the Universal Tracker on your eILP.</div>`));
+    c.appendChild(el(`<div class="save-callout">
+      <strong>Save your work →</strong> Your tracker saves automatically on this computer as you go. But if you use a <strong>shared college PC</strong>, that save can be wiped when you log off — so before you leave, scroll to the bottom and create a <strong>save code</strong>. Keep that code and you can reload everything on any device, any time.
+    </div>`));
+    
+    // Resume prompt if saved data exists
+    const saved=loadTrackerLocal();
+    if(saved&&saved.s){
+      const when=saved.t?new Date(saved.t).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):'';
+      const resume=el(`<div class="card" style="max-width:680px;margin-bottom:16px;border-color:var(--navy)">
+        <h3>Welcome back</h3>
+        <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px">Your target tracker was saved on this device${when?(' ('+esc(when)+')'):''}. Load it again?</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="trResume">Resume my tracker</button>
+          <button class="btn btn-ghost" id="trFresh">Start fresh</button>
+        </div>
+      </div>`);
+      c.appendChild(resume);
+      resume.querySelector('#trResume').onclick=()=>{try{deserializeTracker(saved.s);route('tracker');}catch(e){alert('Could not restore the saved tracker.');}};
+      resume.querySelector('#trFresh').onclick=()=>{clearTrackerLocal();route('tracker');};
+    }
+    
     const card=el('<div class="card"><h3>My units</h3><div id="trRows"></div></div>');
     c.appendChild(card);
     c.appendChild(el(`<div class="card" style="margin-top:16px"><h3>How am I tracking?</h3><div id="trSummary"></div></div>`));
+    
+    // Save & resume card
+    c.appendChild(el(`<div class="card save-card" style="margin-top:16px">
+      <h3>Save your tracker</h3>
+      <p style="font-size:.9rem;color:var(--ink);margin-bottom:10px">Your tracker saves automatically on this device. To move between devices or back up your targets, create a <strong>save code</strong> below.</p>
+      <div class="grid cols-2" style="margin-top:8px">
+        <div class="save-codebox">
+          <h4 style="color:var(--gold)">★ Get my save code</h4>
+          <p style="font-size:.84rem;color:#6B4E12;margin-bottom:8px">Copy this and keep it safe — paste into your notes or email it to yourself.</p>
+          <textarea id="trCode" readonly placeholder="Press the button to create your code…" style="min-height:90px;width:100%;border:1.5px solid var(--gold);border-radius:8px;padding:10px;font-family:monospace;font-size:.8rem;resize:vertical;background:#fff"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <button class="btn btn-merit" id="trMakeCode">Create save code</button>
+            <button class="btn btn-ghost" id="trCopyCode">Copy</button>
+          </div>
+          <div id="trCopyMsg" style="font-size:.82rem;color:var(--good);font-weight:600;margin-top:6px"></div>
+        </div>
+        <div class="save-restorebox">
+          <h4>Restore from a code</h4>
+          <p style="font-size:.84rem;color:var(--muted);margin-bottom:8px">Paste a save code from another device to load that tracker. This replaces what's on screen.</p>
+          <textarea id="trRestoreIn" placeholder="Paste your ESP1-… code here" style="min-height:90px;width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px;font-family:monospace;font-size:.8rem;resize:vertical"></textarea>
+          <div style="margin-top:8px"><button class="btn btn-primary" id="trRestoreBtn">Restore this tracker</button></div>
+          <div id="trRestoreMsg" style="font-size:.82rem;margin-top:6px"></div>
+        </div>
+      </div>
+    </div>`));
+    $('trMakeCode').onclick=()=>{ $('trCode').value=encodeState(serializeTracker()); $('trCopyMsg').textContent=''; };
+    $('trCopyCode').onclick=()=>{
+      const ta=$('trCode'); if(!ta.value){$('trCode').value=encodeState(serializeTracker());}
+      ta.select();
+      let ok=false; try{ok=document.execCommand('copy');}catch(e){}
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(()=>{},()=>{});}
+      $('trCopyMsg').textContent=ok?'Copied to clipboard.':'Selected — press Ctrl/Cmd+C to copy.';
+    };
+    $('trRestoreBtn').onclick=()=>{
+      const msg=$('trRestoreMsg'); const raw=$('trRestoreIn').value;
+      if(!raw.trim()){msg.style.color='var(--accent)';msg.textContent='Paste a code first.';return;}
+      try{ deserializeTracker(decodeState(raw)); saveTrackerLocal(); route('tracker'); }
+      catch(e){ msg.style.color='var(--accent)'; msg.textContent='That code could not be read. Check you copied all of it, including the ESP1- start.'; }
+    };
+    
     renderTracker();
   }
 };
@@ -1235,8 +1295,8 @@ function renderTracker(){
     const t=trackState[u.n];
     const row=el('<div class="unit-row" style="grid-template-columns:1.6fr 1fr 1fr 1fr;align-items:center"></div>');
     row.appendChild(el('<div style="font-size:.88rem"><b>U'+u.n+':</b> '+esc(u.title)+'</div>'));
-    row.appendChild(gradeSel2(t.target,v=>{t.target=v;renderTracker();},false));
-    row.appendChild(gradeSel2(t.actual,v=>{t.actual=v;renderTracker();},true));
+    row.appendChild(gradeSel2(t.target,v=>{t.target=v;markTrackerChanged();renderTracker();},false));
+    row.appendChild(gradeSel2(t.actual,v=>{t.actual=v;markTrackerChanged();renderTracker();},true));
     let status='',col='var(--muted)';
     if(t.actual==='—'){status='—';}
     else{const d=GRADE_ORDER[t.actual]-GRADE_ORDER[t.target];
@@ -1311,6 +1371,21 @@ function savePlannerLocal(){ try{ if(plannerState.year) localStorage.setItem(LS_
 function loadPlannerLocal(){ try{ const raw=localStorage.getItem(LS_KEY); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
 function clearPlannerLocal(){ try{ localStorage.removeItem(LS_KEY); }catch(e){} }
 function markChanged(){ savePlannerLocal(); }
+
+// Tracker save/restore
+const LS_TRACKER='esports_tracker_v1';
+function serializeTracker(){
+  return {v:1, t:Object.entries(trackState).map(([n,d])=>[Number(n), d.target, d.actual])};
+}
+function deserializeTracker(o){
+  if(!o||o.v!==1||!Array.isArray(o.t)) throw new Error('Not a valid tracker code');
+  trackState={};
+  o.t.forEach(([n,tgt,act])=>{ trackState[n]={target:tgt||'M', actual:act||'—'}; });
+}
+function saveTrackerLocal(){ try{ localStorage.setItem(LS_TRACKER, JSON.stringify({s:serializeTracker(),t:Date.now()})); }catch(e){} }
+function loadTrackerLocal(){ try{ const raw=localStorage.getItem(LS_TRACKER); return raw?JSON.parse(raw):null; }catch(e){ return null; } }
+function clearTrackerLocal(){ try{ localStorage.removeItem(LS_TRACKER); }catch(e){} }
+function markTrackerChanged(){ saveTrackerLocal(); }
 function daysUntil(dateStr){
   if(!dateStr) return null;
   const d=new Date(dateStr+"T00:00:00"); if(isNaN(d)) return null;
