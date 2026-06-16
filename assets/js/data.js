@@ -114,7 +114,7 @@ const QUALS = {
       "D":"A strong result — 72 UCAS points and real currency with universities and employers.",
       "D*":"The top of the range — 84 UCAS points. This sets up a triple-Distinction Extended Diploma."}
   },
-  y2:{ name:"Extended Diploma", glh:1080, optCount:10,
+  y2:{ name:"Extended Diploma", glh:1080, optCount:6,
     mandatory:[{n:1,glh:"60"},{n:2,glh:"120"},{n:3,glh:"90"},{n:4,glh:"90"},{n:5,glh:"120"}],
     thresholds:[["U",0],["PPP",108],["MPP",124],["MMP",140],["MMM",156],["DMM",176],["DDM",196],["DDD",216],["D*DD",234],["D*D*D",252],["D*D*D*",270]],
     ucas:{"PPP":48,"MPP":64,"MMP":80,"MMM":96,"DMM":112,"DDM":128,"DDD":144,"D*DD":152,"D*D*D":160,"D*D*D*":168},
